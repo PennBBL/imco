@@ -1,0 +1,14 @@
+Package: imco
+Type: Package
+Title: Functions for Estimating Volumetric Inter-Modal Coupling
+Version: 1.3
+Date: 2017-05-01
+Author: Kristin A. Linn
+Maintainer: Kristin A. Linn <klinn@upenn.edu>
+Description: Estimation of PCA- or regression-based Inter-modal Coupling (IMCo) in volumetric space with two or more imaging modalities.
+License: GPL-3
+RoxygenNote: 6.0.1
+Imports: ANTsR (>= 0.4.0), rlist (>= 0.4.5), extrantsr (>= 1.2.0)
+Suggests: knitr
+NeedsCompilation: no
+Packaged: 2017-11-14 16:57:54 UTC; kalinn
