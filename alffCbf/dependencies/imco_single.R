@@ -23,8 +23,7 @@ imco_single <- function(files, vxl, brainMask, subMask=NULL, ref=1, neighborhood
         stop('check reference modality specification')
     }
     nf = length(files)
-    #fileList = check_ants(files)
-    fileList=files
+    fileList = check_ants(files)
     for(i in 2:length(files)){
         if(!all(dim(fileList[[i-1]])==dim(fileList[[i]]))){
             stop('Image dimensions do not match')
@@ -38,8 +37,7 @@ imco_single <- function(files, vxl, brainMask, subMask=NULL, ref=1, neighborhood
     # Image dimension
     imgDims = dim(fileList[[1]])
     # Read in brain mask
-    #bMask = check_ants(brainMask)
-    bMask=brainMask
+    bMask = check_ants(brainMask)
     if(!all(dim(bMask)==dim(fileList[[1]]))){
         stop('Image dimensions do not match the bran mask')
     }
@@ -70,8 +68,7 @@ imco_single <- function(files, vxl, brainMask, subMask=NULL, ref=1, neighborhood
     radius = floor(abs(lower)/vDims)
     # Neighborhood data from each modality
     if(!is.null(subMask)){
-        #sMask = check_ants(subMask)
-	sMask=subMask
+        sMask = check_ants(subMask)
         nhoods = lapply(fileList, function(x) getNeighborhoodInMask(image=x, mask=sMask, radius=radius, spatial.info=TRUE, boundary.condition='image'))
     } else{
         nhoods = lapply(fileList, function(x) getNeighborhoodInMask(image=x, mask=bMask, radius=radius, spatial.info=TRUE))

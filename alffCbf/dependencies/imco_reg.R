@@ -10,6 +10,7 @@
 #' @param verbose TRUE for updates on computation, else FALSE
 #' @param retimg If TRUE, return list of estimated coupling maps as nifti objects
 #' @param outDir Full path to directory where maps should be written
+#' @param propMiss Maximum proportion of missing voxels in a neighborhood to tolerate, i.e., return NA if missing more than propMiss in the neighborhood of the center voxel
 #' @export
 #' @import ANTsR 
 #' @importFrom extrantsr ants2oro
@@ -19,11 +20,14 @@
 #' @examples \dontrun{
 #' 
 #'}
-imco_reg <- function(files, nhoods, nWts, mask_indices, ref=1, reverse=TRUE, verbose=TRUE, retimg=FALSE, outDir=NULL){
+imco_reg <- function(files, nhoods, nWts, mask_indices, ref=1, reverse=FALSE, verbose=TRUE, retimg=FALSE, outDir=NULL, propMiss=NULL){
 	if(verbose){
 		cat("# Computing weighted regressions \n")
 	}
 	if(length(files)==2 & reverse){
+        if(!is.null(propMiss)){
+            stop("propMiss can only be used when reverse=FALSE")
+        }
 		if(ref==1){
  			x = nhoods[[2]]$values
  			y = nhoods[[1]]$values
@@ -55,7 +59,12 @@ imco_reg <- function(files, nhoods, nWts, mask_indices, ref=1, reverse=TRUE, ver
  			w=nWts
  			xRows = apply(as.matrix(x), 1, function(z){!any(is.na(z))})
  			if(sum(xRows) > 2){
- 				return(cbind(w[xRows], as.matrix(x)[xRows,]))
+                # If the proportion of missing voxels is greater than propMiss, return NA
+                if(mean(!xRows) > propMiss){
+                   return(NA)
+                } else{
+                    return(cbind(w[xRows], as.matrix(x)[xRows,]))
+                }
  			} 
  			return(NA)
  		})

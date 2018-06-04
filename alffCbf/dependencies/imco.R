@@ -13,6 +13,7 @@
 #' @param verbose TRUE for updates on computation, else FALSE
 #' @param retimg If TRUE, return list of estimated coupling maps as nifti objects
 #' @param outDir Full path to directory where maps should be written
+#' @param propMiss Maximum proportion of missing voxels in a neighborhood to tolerate, i.e., return NA if missing more than propMiss in the neighborhood of the center voxel
 #' @export
 #' @import ANTsR 
 #' @importFrom extrantsr check_ants 
@@ -21,7 +22,7 @@
 #' @examples \dontrun{
 #' 
 #'}
-imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thresh=0.005, radius=NULL, reverse=TRUE, verbose=TRUE, retimg=FALSE, outDir=NULL){
+imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thresh=0.005, radius=NULL, reverse=FALSE, verbose=TRUE, retimg=FALSE, outDir=NULL, propMiss=NULL){
     if(!(type=="pca" | type=="regression")){
         stop('type must be either pca or regression')
     }
@@ -29,8 +30,7 @@ imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thre
         stop('check reference modality specification')
     }
     nf = length(files)
-    #fileList = check_ants(files)
-    fileList=files
+    fileList = check_ants(files)
     for(i in 2:length(files)){
         if(!all(dim(fileList[[i-1]])==dim(fileList[[i]]))){
             stop('Image dimensions do not match')
@@ -65,8 +65,7 @@ imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thre
     	} 
     }
     # Read in brain mask
-    #bMask = check_ants(brainMask)
-    bMask=brainMask
+    bMask = check_ants(brainMask)
     if(!all(dim(bMask)==dim(fileList[[1]]))){
         stop('Image dimensions do not match the brain mask')
     }
@@ -88,6 +87,7 @@ imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thre
     	minDim = min(vDims) #Should I use max or min to compute sigma?
     	width = fwhm*minDim
         # Need sigma for specifying Guassian kernel 
+        # sigma is variance here
     	sigma = width/(2*sqrt(2*log(2)))
         # Backsolve for radius using kernel formula, assuming 3D vector with equal elements (e.g., c(2,2,2))
     	radium = round(sqrt(-2*sigma*log(thresh)/3), 0)
@@ -101,8 +101,7 @@ imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thre
     }
     # Neighborhood data from each modality
     if(!is.null(subMask)){
-        #sMask = check_ants(subMask)
-	sMask=subMask
+        sMask = check_ants(subMask)
         mask_indices = which(as.array(sMask) > 0)
         nhoods = lapply(fileList, function(x) getNeighborhoodInMask(image=x, mask=sMask, radius=radius, spatial.info=TRUE, boundary.condition='image'))
     } else{
@@ -119,10 +118,10 @@ imco <- function(files, brainMask, subMask=NULL, type="pca", ref=1, fwhm=3, thre
     # Will use to compute distances from center voxel
     nWts = get_weights(offs, vDims, sigma=sigma)
     if(type=="regression"){
-    	regObj = imco_reg(files=fileList, nhoods=nhoods, nWts=nWts, mask_indices=mask_indices, ref=ref, reverse=reverse, verbose=verbose, retimg=retimg, outDir=outDir)
+    	regObj = imco_reg(files=fileList, nhoods=nhoods, nWts=nWts, mask_indices=mask_indices, ref=ref, reverse=reverse, verbose=verbose, retimg=retimg, outDir=outDir, propMiss=propMiss)
     	return(regObj)
     } else{
-    	pcaObj = imco_pca(files=fileList, nhoods=nhoods, nWts=nWts, mask_indices=mask_indices, ref=ref, verbose=verbose, retimg=retimg, outDir=outDir)
+    	pcaObj = imco_pca(files=fileList, nhoods=nhoods, nWts=nWts, mask_indices=mask_indices, ref=ref, verbose=verbose, retimg=retimg, outDir=outDir, propMiss=propMiss)
     	return(pcaObj)
     }
 }

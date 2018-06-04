@@ -1,8 +1,8 @@
 #' @title Weighted simple linear regression
 #'
-#' @description Returns parameters from weighted regression of x on y (primary) and y on x (secondary)
-#' @param x dependent modality matrix of nhood values (primary)
-#' @param y independent modality matrix of nhood values (primary)
+#' @description Returns parameters from weighted regression of y on x (primary) and x on y (secondary, "reverse")
+#' @param x independent modality matrix of nhood values (primary)
+#' @param y dependent modality matrix of nhood values (primary)
 #' @param wts vector of kernel weights
 #' @param mInds indices for which to compute IMCo
 #' @param refImg reference image for header info
