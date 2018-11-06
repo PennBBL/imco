@@ -1,0 +1,30 @@
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://archive.ubuntu.com/ubuntu/
+%post
+  sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
+  apt-get update
+  # Install 
+  apt-get install -y  libopenblas-dev r-base-core libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libssh-dev wget vim git nano git vim git nano gfortran g++ curl wget autoconf bzip2 libtool libtool-bin  r-base r-base-dev r-cran-car r-base-core libxml2 libxml2-dev r-cran-rgl  python autoconf bzip2 libtool libtool-bin python-pip python-dev
+ 
+  apt-get update
+  apt-get upgrade
+  apt-get clean
+  locale-gen en_US.UTF-8
+  #install main R
+  # Install required R packages
+  R --slave -e 'install.packages( c("Rcpp", "RcppEigen", "magrittr", "rsvd", "magic", "psych" ,"knitr"),dependencies = TRUE, repos="https://cloud.r-project.org/" )'
+  R --slave -e 'install.packages("devtools", dependencies=TRUE, repos="https://cloud.r-project.org/")'
+  R --slave -e 'install.packages( c( "rlist", "geepack", "neurobase", "fslr","oro.nifti","utils","WhiteStripe", "matrixStats", "R.matlab", "abind", "R.utils","neuroim", "plyr", "RNifti", "stapler" ),dependencies = TRUE, repos="https://cloud.r-project.org/" )'
+   git clone https://github.com/stnava/cmaker.git && R CMD INSTALL cmaker 
+   git clone https://github.com/stnava/ITKR.git && R CMD INSTALL ITKR 
+   git clone https://github.com/ANTsX/ANTsRCore.git && R CMD INSTALL ANTsRCore 
+   git clone https://github.com/ANTsX/ANTsR.git && R CMD INSTALL ANTsR
+   git clone https://github.com/muschellij2/extrantsr.git && R CMD INSTALL extrantsr
+   wget https://www.dropbox.com/s/c6b9zhmcm31ticq/imco.zip && unzip imco.zip && R CMD INSTALL imco
+   apt-get update
+   apt-get upgrade
+   apt-get clean
+%runscript
+  #!/bin/bash
+  R
