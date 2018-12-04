@@ -5,7 +5,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
   apt-get update
   # Install 
-  apt-get install -y  libopenblas-dev r-base-core libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libssh-dev wget vim git nano git vim git nano gfortran g++ curl wget autoconf bzip2 libtool libtool-bin  r-base r-base-dev r-cran-car r-base-core libxml2 libxml2-dev r-cran-rgl  python autoconf bzip2 libtool libtool-bin python-pip python-dev
+  apt-get install -y  libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libssh-dev wget vim git nano git vim  gfortran g++ curl wget autoconf bzip2 libtool libtool-bin  r-base r-base-dev r-cran-car r-base-core libxml2 libxml2-dev r-cran-rgl  python autoconf bzip2  python-pip python-dev
  
   apt-get update
   apt-get upgrade
