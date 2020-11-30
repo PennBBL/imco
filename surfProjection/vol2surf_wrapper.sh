@@ -11,6 +11,8 @@ Usage:
   -s:  freesurfer processed directory. required. 
   -o:  output directory. required.
 
+# output directory is in lbeard gome directory 
+# /home/lbeard/vol2surf
 Example: ./vol2surf_wrapper.sh -i /data/joy/BBL/tutorials/exampleData/vol2surf/subjList.csv -s /data/joy/BBL/studies/pnc/processedData/structural/freesurfer53/ -o /home/lbeard/vol2surf
 
 USAGE
